@@ -1,0 +1,40 @@
+{
+	"manifest_version": 3,
+	"name": "PromptCollector.ai - All your Prompts are belong to us",
+	"version": "1.0.0",
+	"description": "A Chrome extension for collecting and managing AI prompts, with seamless AI app integration.",
+	"permissions": [
+		"storage",
+		"activeTab",
+		"contextMenus"
+	],
+	"action": {
+		"default_popup": "html/main-panel.html",
+		"default_icon": {
+			"16": "img/icon16.png",
+			"48": "img/icon48.png",
+			"128": "img/icon128.png"
+		}
+	},
+	"icons": {
+		"16": "img/icon16.png",
+		"48": "img/icon48.png",
+		"128": "img/icon128.png"
+	},
+	"background": {
+		"service_worker": "js/background.js"
+	},
+	"content_scripts": [
+		{
+			"matches": [
+				"<all_urls>"
+			],
+			"js": [
+				"js/content.js"
+			],
+			"css": [
+				"css/main.css"
+			]
+		}
+	]
+}
