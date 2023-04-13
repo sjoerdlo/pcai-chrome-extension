@@ -5,6 +5,8 @@
 	"description": "A Chrome extension for collecting and managing AI prompts, with seamless AI app integration.",
 	"permissions": [
 		"storage",
+		"scripting",
+		"tabs",
 		"activeTab",
 		"contextMenus"
 	],

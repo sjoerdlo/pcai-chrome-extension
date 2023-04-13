@@ -32,7 +32,10 @@ function injectContentScript() {
     chrome.tabs.query({}, (tabs) => {
         // Iterate over each open tab and inject the content script
         tabs.forEach((tab) => {
-            chrome.tabs.executeScript(tab.id, { file: 'content.js' });
+            chrome.scripting.executeScript({
+                target: { tabId: tab.id },
+                files: ['js/content.js'],
+            });
         });
     });
 }
@@ -42,13 +45,15 @@ function injectContentScript() {
  * 
  * @param {Object} details - An object containing information about the event.
  */
+/*
 chrome.runtime.onInstalled.addListener((details) => {
     // Check if the event type is installation or update
     if (details.reason === 'install' || details.reason === 'update') {
         // Inject the content script into all open tabs
         injectContentScript();
     }
-});
+});*/
+
 
 /**
  * Handles messages from the content script requesting content script injection.
