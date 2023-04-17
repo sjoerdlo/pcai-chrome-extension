@@ -10,6 +10,11 @@
 		"activeTab",
 		"contextMenus"
 	],
+	"host_permissions": [
+        "https://chat.openai.com/*",
+        "https://labs.openai.com/*",
+        "https://app.leonardo.ai/*"
+    ],
 	"action": {
 		"default_popup": "html/main-panel.html",
 		"default_icon": {
@@ -29,7 +34,9 @@
 	"content_scripts": [
 		{
 			"matches": [
-				"<all_urls>"
+				"https://chat.openai.com/*",
+                "https://labs.openai.com/*",
+                "https://app.leonardo.ai/*"
 			],
 			"js": [
 				"js/content.js"

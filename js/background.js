@@ -8,15 +8,18 @@
  * @param {Function} sendResponse - A function to send a response back to the sender.
  */
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log('chrome.runtime.onMessage.addListener');
     // Check the message type and call appropriate function
-    switch (message.type) {
-        // Add cases for different message types here
-        // For example:
-        // case 'FETCH_PROMPTS':
-        //     handleFetchPrompts(message, sender, sendResponse);
-        //     break;
-        case 'injectContentScript':
-            handleInjectContentScriptMessage(message, sender, sendResponse);
+    switch (message.action) {
+        case 'executeAiAppIntegration':
+            console.log('executeAiAppIntegration received');
+            executeAiAppIntegration(sender.tab);
+            sendResponse({ success: true });
+            break;
+        case 'injectOverlay':
+            injectOverlayHTML(sender.tab);
+            chrome.scripting.insertCSS({target: {tabId: sender.tab.id}, files: ['css/ai-app-integration-overlay.css']});
+            sendResponse({success: true});
             break;
     }
 
@@ -25,48 +28,55 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 /**
- * Injects the content script into all open tabs.
+ * Injects the AI App Integration overlay HTML into the specified tab and executes the associated script.
+ *
+ * @param {Object} tab - The Tab object where the AI App Integration overlay HTML should be injected.
  */
-function injectContentScript() {
-    // Query for all open tabs
-    chrome.tabs.query({}, (tabs) => {
-        // Iterate over each open tab and inject the content script
-        tabs.forEach((tab) => {
+function injectOverlayHTML(tab) {
+    // Fetch the AI App Integration overlay HTML from the extension's local file
+    fetch(chrome.runtime.getURL('html/ai-app-integration-overlay.html'))
+        .then(response => response.text())
+        .then(html => {
+            // Inject the fetched HTML content into the specified tab
             chrome.scripting.executeScript({
                 target: { tabId: tab.id },
-                files: ['js/content.js'],
+                function: function (htmlContent) {
+                    const div = document.createElement('div');
+                    div.innerHTML = htmlContent;
+                    document.body.appendChild(div);
+                },
+                args: [html],
+            }, () => {
+                // Execute ai-app-integration-overlay.js after injecting the HTML content
+                // This ensures that the DOM elements are available when the script runs
+                chrome.scripting.executeScript({
+                    target: { tabId: tab.id },
+                    files: ['js/ai-app-integration-overlay.js']
+                });
             });
-        });
-    });
+        })
+        .catch(err => console.error('Error injecting AI App Integration overlay HTML:', err));
 }
 
-/**
- * Listener for the extension installation or update event.
- * 
- * @param {Object} details - An object containing information about the event.
- */
-/*
-chrome.runtime.onInstalled.addListener((details) => {
-    // Check if the event type is installation or update
-    if (details.reason === 'install' || details.reason === 'update') {
-        // Inject the content script into all open tabs
-        injectContentScript();
-    }
-});*/
+
+
 
 
 /**
- * Handles messages from the content script requesting content script injection.
+ * Executes the AI App Integration content script (ai-app-integration.js).
+ * This function injects ai-app-integration.js into the specified tab.
  *
- * @param {Object} request - The message object containing the action to perform.
- * @param {Object} sender - The sender object containing information about the sender.
- * @param {Function} sendResponse - A function to send a response to the sender.
+ * @param {Object} tab - The Tab object where the AI App Integration script should be executed.
  */
-function handleInjectContentScriptMessage(request, sender, sendResponse) {
-    // Check if the action is "injectContentScript"
-    if (request.action === 'injectContentScript') {
-        // Inject the AI App integration script into the specified tab
-        chrome.tabs.executeScript(sender.tab.id, { file: 'js/ai-app-integration.js' });
-        sendResponse({ success: true });
-    }
+function executeAiAppIntegration(tab) {
+    // Inject ai-app-integration.js into the specified tab
+    chrome.scripting.executeScript(
+        {
+            target: { tabId: tab.id },
+            files: ["js/ai-app-integration.js"],
+        },
+        () => {
+            console.log("ai-app-integration.js injected!");
+        }
+    );
 }

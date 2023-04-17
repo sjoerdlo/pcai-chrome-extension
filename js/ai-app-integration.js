@@ -1,5 +1,7 @@
 // ai-app-integration.js
 
+console.log("ai-app-integration.js injected!");
+
 /**
  * Creates and returns the prompt collector button element.
  *
@@ -29,11 +31,13 @@ function createPromptCollectorButton() {
  * Inserts the prompt collector button into the appropriate location for the AI App.
  */
 function insertPromptCollectorButton() {
+    console.log("insertPromptCollectorButton");
     // Define an array of AI App URL patterns and button insertion functions
     const aiAppButtonInsertionMap = [
         {
             urlPattern: /^https:\/\/chat\.openai\.com\//,
             insertButton: () => {
+                console.log("chatgpt button");
                 const actionBar = document.querySelector('.action-bar');
                 if (actionBar) {
                     actionBar.appendChild(createPromptCollectorButton());
@@ -132,10 +136,13 @@ function getPromptAndResponse() {
     }
 }
 
-// Update the event listener for the prompt collector button
-button.addEventListener('click', () => {
-    const { prompt, response } = getPromptAndResponse();
-    console.log('Prompt:', prompt);
-    console.log('Response:', response);
-    // TODO: Implement prompt collection logic here
+// Other code...
+
+// Call the function to inject the AI App Integration overlay
+chrome.runtime.sendMessage({action: 'injectOverlay'}, (response) => {
+    if (response && response.success) {
+        console.log('AI App Integration overlay injected');
+    } else {
+        console.log('Error injecting AI App Integration overlay');
+    }
 });

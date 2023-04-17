@@ -1,0 +1,52 @@
+/* ai-app-integration-overlay.css */
+
+#ai-app-integration-overlay {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+#ai-app-integration-button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pcai-skv837s0 {
+	position: fixed;
+	right: 0;
+	top: 0;
+	transform: translate3d(100%, 0px, 0px);
+	transition: transform 0.2s var(--ease_in_out_quint, cubic-bezier(0.83, 0, 0.17, 1));
+	width: 400px;
+	z-index: 1000;
+}
+
+.pcai-skv837s0.active {
+	right: 400px;
+}
+
+.pcai-btn-toggleSidebar {
+	background: rgb(32, 33, 35);
+	border-radius: 5px 0 0 5px;
+	box-shadow: -3px 3px 11px 0px rgba(0,0,0,0.76);
+    cursor: pointer;
+	padding: 20px;
+	position: absolute;
+	right: 100%;
+	top: 20px;
+}
+
+.pcai-sidebar {
+	background: rgb(32, 33, 35);
+	box-shadow: -6px 6px 11px 0px rgba(0,0,0,0.76);
+	height: 100vh;
+}
